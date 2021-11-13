@@ -1,8 +1,14 @@
 package com.example.whatfood
 
+import android.content.ContentValues.TAG
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.TextView
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import java.lang.Math.random
 import com.example.whatfood.R.id.foodText as foodText1
 
@@ -11,22 +17,11 @@ class MainActivity : AppCompatActivity() {
     // Will connect to database in future
     // also language conversion is to be done
     val foodList = arrayOf(
-        "Rajmah Chawal",
         "Chhole Bhature",
         "Dal Parantha",
-        "Pizza",
-        "Pasta",
-        "Macaroni",
-        "Kofte",
-        "Bhindi" ,
-        "Urad Dal",
-        "Moong Dal",
-        "Arhar Dal",
-        "Aloo Parantha",
         "Red Sauce Pasta",
         "White Sauce Pasta",
         "Macaroni" ,
-        "Suji Bread" ,
         "Bread Butter" ,
         "Mayo Sandwich" ,
         "Bread Peanut Butter" ,
@@ -40,43 +35,37 @@ class MainActivity : AppCompatActivity() {
         "Pav Bhaji",
         "Seviyaan",
         "Poha",
-        "Bread Pakoda" ,
+        "Chuha Bread",
         "Aloo Pakoda" ,
         "Pyaz Pakoda",
         "Maggi" ,
-        "Aloo Nuggets" ,
-        "Cheese Nuggets" ,
-        "Aloo Smilies" ,
-        "French Fries" ,
         "Palak Parantha" ,
         "Paneer Parantha" ,
-        "Bread Masala" ,
-        "Dalia",
+        "Sooji Bread" ,
+        "Vegetable Dalia",
         "Kathi Roll",
-        "Mix Veg",
-        "Chaap",
-        "Aloo Matar",
         "Chhole Bhature",
         "Chana Kulcha",
-        "Bhindi",
-        "Kadhi Chawal",
-        "Fried Rice",
-        "Pulao",
+        "Upma",
+        "Thepla",
         "Paneer Bhurji",
-        "Paneer Basar",
-        "Paneer Butter Masala",
-        "Paneer Shahi",
-        "Dal Makhani",
-        "Rajmah",
-        "Gajar Matar",
-        "Chhole",
-        "Lobhia",
-        "Gobhi"
+        "Palak Puri",
+        "Omelette"
     )
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        val user = FirebaseAuth.getInstance().currentUser
+        if ( user == null ) {
+            startActivity(Intent(this, loginActivity::class.java))
+        } else {
+            // Here, we take the data pertaining to the user by logging the user to Firebase DB
+            Log.d("User Display Name: ", user.displayName!!)
+        }
     }
 
     fun genrand(view: android.view.View) {
