@@ -1,16 +1,22 @@
 package com.example.whatfood
 
-import android.content.ContentValues.TAG
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.ImageView
 import android.widget.TextView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
+import com.example.whatfood.R.id.nameDisplay
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import java.lang.Math.random
 import com.example.whatfood.R.id.foodText as foodText1
+import com.example.whatfood.R.id.displayProfile as dp1
 
 class MainActivity : AppCompatActivity() {
 
@@ -55,16 +61,48 @@ class MainActivity : AppCompatActivity() {
 
 
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val displayImageView : ImageView = findViewById(dp1)
+        val nameDisplayView : TextView = findViewById(nameDisplay)
         val user = FirebaseAuth.getInstance().currentUser
+
         if ( user == null ) {
             startActivity(Intent(this, loginActivity::class.java))
         } else {
             // Here, we take the data pertaining to the user by logging the user to Firebase DB
-            Log.d("User Display Name: ", user.displayName!!)
+
+            Glide.with(this).load(user.photoUrl)
+                .listener(
+                    object : RequestListener<Drawable> {
+                        override fun onLoadFailed(
+                            e: GlideException?,
+                            model: Any?,
+                            target: Target<Drawable>?,
+                            isFirstResource: Boolean
+                        ): Boolean {
+                            // Have to do some Progress Bar hiding here, if made in the first place
+                            return false
+                        }
+
+                        override fun onResourceReady(
+                            resource: Drawable?,
+                            model: Any?,
+                            target: Target<Drawable>?,
+                            dataSource: DataSource?,
+                            isFirstResource: Boolean
+                        ): Boolean {
+                            // Have to do some Progress Bar hiding here, if made in the first place
+                            return false
+                        }
+                    }
+                ).into(displayImageView)
+
+            nameDisplayView.text = user.displayName
+
         }
     }
 
