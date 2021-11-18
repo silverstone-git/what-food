@@ -4,4 +4,10 @@
     <string name="i_am_hungry_bro">I am Hungry Bro</string>
     <string name="welcome">Welcome</string>
     <string name="john_doe">John Doe</string>
+    <string name="log_out">Log Out</string>
+    <string name="what_s_in_the_menu">What\'s in the Menu</string>
+    <string name="new_food_here">New Food Here</string>
+    <string name="ascii_default">--__--</string>
+    <string name="submit">Submit</string>
+    <string name="get_food">Get Food</string>
 </resources>

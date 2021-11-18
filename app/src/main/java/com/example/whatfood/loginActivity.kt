@@ -16,6 +16,16 @@ class loginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+/*
+        if(this.getIntent().getExtras() != null) {
+            Snackbar.make(
+                this,
+                View(loginActivity()),
+                "You have been Successfully logged out",
+                Snackbar.LENGTH_LONG
+            ).show()
+            }
+*/
         signInLauncher.launch(signInIntent)
     }
 
@@ -37,6 +47,7 @@ class loginActivity : AppCompatActivity() {
         .createSignInIntentBuilder()
         .setAvailableProviders(providers)
         .setLogo(R.drawable.what_food_logo)
+        .setTheme(R.style.ThemeOverlay_AppCompat_Dark)
         .build()
 
     private fun onSignInResult(result: FirebaseAuthUIAuthenticationResult) {
@@ -51,7 +62,7 @@ class loginActivity : AppCompatActivity() {
             // response.getError().getErrorCode() and handle the error.
             if (response == null) {
                 finish()
-            } else if (response?.error?.errorCode == ErrorCodes.NO_NETWORK) {
+            } else if (response.error?.errorCode == ErrorCodes.NO_NETWORK) {
 
                 val snacc= Snackbar.make(
                     this,
@@ -61,12 +72,12 @@ class loginActivity : AppCompatActivity() {
                 )
                 snacc.show()
 
-            } else if (response?.error?.errorCode == ErrorCodes.UNKNOWN_ERROR) {
+            } else if (response.error?.errorCode == ErrorCodes.UNKNOWN_ERROR) {
 
                 val snacc= Snackbar.make(
                     this,
                     View(loginActivity()),
-                    response?.error?.errorCode.toString(),
+                    response.error?.errorCode.toString(),
                     LENGTH_LONG
                 )
                 snacc.show()
