@@ -6,8 +6,10 @@
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.21197916666666666" />
         <entry key="app/src/main/res/layout/activity_edit_cuisine.xml" value="0.3578125" />
         <entry key="app/src/main/res/layout/activity_firebase_ui.xml" value="0.19583333333333333" />
+        <entry key="app/src/main/res/layout/activity_food_rec_view_adapter.xml" value="0.365036231884058" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.3770833333333333" />
+        <entry key="app/src/main/res/layout/element_layout.xml" value="0.2140625" />
         <entry key="app/src/main/res/menu/options_menu.xml" value="0.35260416666666666" />
       </map>
     </option>

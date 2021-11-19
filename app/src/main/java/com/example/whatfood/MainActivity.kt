@@ -70,8 +70,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // Getting the Views in which user info is to be filled from the layout xml
         val displayImageView: ImageView = findViewById(dp1)
         val nameDisplayView: TextView = findViewById(nameDisplay)
+
+        // Getting the user info from Firebase, and checking if its a logged in user, and if they aren't, start the log in activity
         val user = FirebaseAuth.getInstance().currentUser
 
         if (user == null) {
@@ -111,11 +114,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
     fun genrand(view: View) {
 
         // The Function being called to change the main text again and again
-        val floatindex = random() * foodList.size
-        val index = floatindex.toInt()
+        val floatIndex = random() * foodList.size
+        val index = floatIndex.toInt()
 
 
         // The actual Changing of text
