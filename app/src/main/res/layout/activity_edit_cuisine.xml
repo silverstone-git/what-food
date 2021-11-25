@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".editCuisine">
+    tools:context=".EditCuisine">
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textInputLayout"
@@ -12,7 +12,8 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="70dp"
         app:layout_constraintBottom_toTopOf="@id/submitFood"
-        tools:layout_editor_absoluteX="1dp">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/inputFoodField"
@@ -33,21 +34,10 @@
 
         />
 
-    <Button
-        android:id="@+id/getFoodButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="getFood"
-        android:text="@string/get_food"
-        app:layout_constraintBottom_toTopOf="@+id/textInputLayout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/FoodRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/getFoodButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

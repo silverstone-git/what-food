@@ -1,5 +1,7 @@
 package com.example.whatfood
 
+import android.content.ContentValues
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
@@ -20,6 +22,10 @@ import com.example.whatfood.R.id.nameDisplay
 import com.firebase.ui.auth.AuthUI
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import java.lang.Math.random
 import com.example.whatfood.R.id.foodText as foodText1
 import com.example.whatfood.R.id.displayProfile as dp1
@@ -28,7 +34,7 @@ class MainActivity : AppCompatActivity() {
 
     // Will connect to database in future
     // also language conversion is to be done
-    val foodList = arrayOf(
+    private val foodList = arrayOf(
         "Chhole Bhature",
         "Dal Parantha",
         "Red Sauce Pasta",
@@ -75,10 +81,10 @@ class MainActivity : AppCompatActivity() {
         val nameDisplayView: TextView = findViewById(nameDisplay)
 
         // Getting the user info from Firebase, and checking if its a logged in user, and if they aren't, start the log in activity
-        val user = FirebaseAuth.getInstance().currentUser
+        val user: FirebaseUser? = FirebaseAuth.getInstance().currentUser
 
         if (user == null) {
-            startActivity(Intent(this, loginActivity::class.java))
+            startActivity(Intent(this, LoginActivity::class.java))
         } else {
             // Here, we take the data pertaining to the user by logging the user to Firebase DB
 
@@ -110,6 +116,8 @@ class MainActivity : AppCompatActivity() {
 
             nameDisplayView.text = user.displayName
 
+            checkAndAddUser(user, view = View(this))
+
 
         }
     }
@@ -127,9 +135,62 @@ class MainActivity : AppCompatActivity() {
         textView.text = foodList[index]
     }
 
+
    fun goEdit(view: View)  {
-        startActivity(Intent(this, editCuisine::class.java))
+        startActivity(Intent(this, EditCuisine::class.java))
    }
+
+    private fun checkAndAddUser(user: FirebaseUser?, view: View) {
+
+        // Checking if user is there in database:
+        val db: FirebaseFirestore = Firebase.firestore
+        /*
+        // Execute the below code to check if the user exists, I am not going to because I have to update the user info constantly
+
+        var userExists = false
+
+        db.collection("users")
+            .get()
+            .addOnSuccessListener { result ->
+                for (document in result) {
+                    Log.d(TAG, "Looping through the documents: Document id in users is: ${document.id} Firebase User Id is: ${user?.uid}")
+                    if (document.id == user?.uid) {
+                        userExists = true
+                        Log.d(TAG, "User already Exists, skipping the writing part")
+                    }
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.w(TAG, "Error getting documents.", exception)
+            }
+
+         */
+
+        //if ( !userExists ) {
+
+        // Create a new user because they don't exist
+        val userToBePassed = hashMapOf(
+            "name" to user?.displayName,
+            "email" to user?.email,
+            "displayLink" to user?.photoUrl.toString(),
+            "lastTimeOfLogin" to System.currentTimeMillis()
+        )
+
+        // Update the new User with a generated ID
+        db.collection("users")
+            // names the document as the firebase uid of the user
+            .document(user?.uid.toString())
+            .set(userToBePassed)
+            .addOnSuccessListener { documentReference ->
+                Log.d(ContentValues.TAG, "User has been Updated")
+            }
+            .addOnFailureListener { e ->
+                Log.w(ContentValues.TAG, "Error adding document", e)
+            }
+        //}
+
+    }
+
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater: MenuInflater = menuInflater
@@ -155,7 +216,7 @@ class MainActivity : AppCompatActivity() {
                     Snackbar.LENGTH_LONG
                 ).show()
 
-                startActivity(Intent(this, loginActivity::class.java).putExtra(Intent.EXTRA_TEXT, "Bruh you logged out"))
+                startActivity(Intent(this, LoginActivity::class.java).putExtra(Intent.EXTRA_TEXT, "Bruh you logged out"))
                 true
             }
             else -> super.onOptionsItemSelected(item)
