@@ -11,13 +11,14 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 class EditCuisine : AppCompatActivity() {
 
     // getting the database from Firebase cloud
-    //private val user = FirebaseAuth.getInstance().currentUser
+    private val user = FirebaseAuth.getInstance().currentUser
 
     private var foodArray = ArrayList<String>()
 
@@ -27,27 +28,27 @@ class EditCuisine : AppCompatActivity() {
 
         // fetching data from database
         val db = Firebase.firestore
-        db.collection("users")
+        db.collection("users/${user?.uid.toString()}/posts")
             .get()
             .addOnSuccessListener { result ->
                 for (document in result) {
-                    Log.d(TAG, "${document.id} => ${document.data}")
+                    Log.d(TAG, "${document.id} => ${document.data}, name of recipe is: ${document.data["nameOfRecipe"].toString()}")
+                    foodArray.add(document.data["nameOfRecipe"].toString())
+                    Toast.makeText(applicationContext, "the list is : $foodArray", Toast.LENGTH_SHORT).show()
+                    val foodRecyclerView = findViewById<RecyclerView>(R.id.FoodRecyclerView)
+                    foodRecyclerView.layoutManager = GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false)
+                    foodRecyclerView.adapter = FoodRecViewAdapter(foodArray)
                 }
             }
             .addOnFailureListener { exception ->
-                Log.w(TAG, "Error getting documents.", exception)
+                Log.w(TAG, "Error getting recipe documents.", exception)
             }
 
-        Toast.makeText(applicationContext, "the list is : $foodArray", Toast.LENGTH_SHORT).show()
-        val foodRecyclerView = findViewById<RecyclerView>(R.id.FoodRecyclerView)
-        foodRecyclerView.layoutManager = GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false)
-        foodRecyclerView.adapter = FoodRecViewAdapter(foodArray)
 
         val mySubmitButton = findViewById<Button>(R.id.submitFood)
 
-        mySubmitButton.setOnClickListener(View.OnClickListener {
-            fun submitMyFood(view: View) {
-                // Write new data to the database
+        mySubmitButton.setOnClickListener {
+                // Write new posts to the database
 
                 // getting the text from user input and setting the value of message to send to database
                 val inputFoodView : TextInputEditText = findViewById(R.id.inputFoodField)
@@ -55,16 +56,32 @@ class EditCuisine : AppCompatActivity() {
 
                 //...
                 // do something with inputFood
+                // read a hashmap from db, append the updates and run the set function
+                val post = hashMapOf(
+                    "nameOfRecipe" to inputFood,
+                    "timeOfAddition" to System.currentTimeMillis(),
+                    "recipe" to "TBD"
+                )
 
-                Snackbar.make(
-                    this,
-                    findViewById(R.id.submitFood),
-                    "Your Food $inputFood has been added.",
-                    Snackbar.LENGTH_LONG
-                ).show()
+                // Add a new post document with a generated ID
+                db.collection("users/${user!!.uid}/posts")
+                    .add(post)
+                    .addOnSuccessListener { documentReference ->
+                        Log.d(TAG, "post DocumentSnapshot  added with ID: ${documentReference.id}")
+                        Snackbar.make(
+                            this,
+                            findViewById(R.id.submitFood),
+                            "Your Food $inputFood has been added in post",
+                            Snackbar.LENGTH_LONG
+                        ).show()
+                    }
+                    .addOnFailureListener { e ->
+                        Log.w(TAG, "Error adding post snapshot", e)
+                    }
 
-            }
-        })
+
+
+        }
 
     }
 

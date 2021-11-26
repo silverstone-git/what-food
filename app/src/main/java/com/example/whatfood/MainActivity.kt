@@ -1,6 +1,7 @@
 package com.example.whatfood
 
 import android.content.ContentValues
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
@@ -34,6 +35,7 @@ class MainActivity : AppCompatActivity() {
 
     // Will connect to database in future
     // also language conversion is to be done
+    /*
     private val foodList = arrayOf(
         "Chhole Bhature",
         "Dal Parantha",
@@ -70,6 +72,8 @@ class MainActivity : AppCompatActivity() {
         "Palak Puri",
         "Omelette"
     )
+
+     */
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -116,36 +120,53 @@ class MainActivity : AppCompatActivity() {
 
             nameDisplayView.text = user.displayName
 
-            checkAndAddUser(user, view = View(this))
+            updateTheUser(user, view = View(this))
 
             val feelHungry = findViewById<Button>(R.id.mainButton)
             val editCuisineButton = findViewById<Button>(R.id.whatsInTheMenu)
 
-            feelHungry.setOnClickListener(View.OnClickListener {
-                fun genrand(view: View) {
+            feelHungry.setOnClickListener {
 
-                    // The Function being called to change the main text again and again
-                    val floatIndex = random() * foodList.size
-                    val index = floatIndex.toInt()
+                // fetching data from database
+                val db = Firebase.firestore
+                var foodArray = ArrayList<String>()
+                db.collection("users/${user.uid}/posts")
+                    .get()
+                    .addOnSuccessListener { result ->
+                        for (document in result) {
+                            Log.d(ContentValues.TAG, "${document.id} => ${document.data}, name of recipe is: ${document.data["nameOfRecipe"].toString()}")
+                            foodArray.add(document.data["nameOfRecipe"].toString())
+                            // The Function being called to change the main text again and again
+                            val sizeOfArray = foodArray.size
+                            if ( sizeOfArray > 0 ) {
+                                /*
+                                val floatIndex = random() * foodArray.size
+                                val index = floatIndex.toInt()
 
+                                 */
 
-                    // The actual Changing of text
-                    val textView: TextView = findViewById(foodText1)
-                    textView.text = foodList[index]
+                                // The actual Changing of text
+                                val textView: TextView = findViewById(foodText1)
+                                textView.text = foodArray.toArray().random().toString()
+                            } else {
+                                Log.d(TAG, "Bro no food data was present")
+                            }
+                        }
+                    }
+                    .addOnFailureListener { exception ->
+                        Log.w(ContentValues.TAG, "Error getting recipe documents.", exception)
+                    }
+
                 }
-            })
 
-            editCuisineButton.setOnClickListener(View.OnClickListener {
-                fun goEdit(view: View)  {
-                    startActivity(Intent(this, EditCuisine::class.java))
-                }
-            })
+            editCuisineButton.setOnClickListener {
+                startActivity(Intent(this, EditCuisine::class.java))
+            }
         }
     }
 
-    private fun checkAndAddUser(user: FirebaseUser?, view: View) {
+    private fun updateTheUser(user: FirebaseUser?, view: View) {
 
-        // Checking if user is there in database:
         val db: FirebaseFirestore = Firebase.firestore
         /*
         // Execute the below code to check if the user exists, I am not going to because, its realtime updates in fire store listener
@@ -182,7 +203,7 @@ class MainActivity : AppCompatActivity() {
         // Update the new User with a generated ID
         db.collection("users")
             // names the document as the firebase uid of the user
-            .document(user?.uid.toString())
+            .document(user!!.uid.toString())
             .set(userToBePassed)
             .addOnSuccessListener {
                 Log.d(ContentValues.TAG, "User has been Updated")
