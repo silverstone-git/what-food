@@ -10,13 +10,13 @@
         android:id="@+id/mainButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="genrand"
         android:text="@string/i_am_hungry_bro"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:layout_editor_absoluteX="16dp" />
 
     <ImageView
         android:id="@+id/displayProfile"
+        android:contentDescription="@string/your_google_dp"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:adjustViewBounds="true"
@@ -49,8 +49,7 @@
         app:layout_constraintTop_toBottomOf="@+id/nameDisplay" />
 
     <Button
-        android:id="@+id/button2"
-        android:onClick="goEdit"
+        android:id="@+id/whatsInTheMenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/what_s_in_the_menu"

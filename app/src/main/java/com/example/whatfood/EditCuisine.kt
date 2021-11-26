@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Button
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
@@ -18,7 +19,7 @@ class EditCuisine : AppCompatActivity() {
     // getting the database from Firebase cloud
     //private val user = FirebaseAuth.getInstance().currentUser
 
-    var foodArray = ArrayList<String>()
+    private var foodArray = ArrayList<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,28 +43,31 @@ class EditCuisine : AppCompatActivity() {
         foodRecyclerView.layoutManager = GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false)
         foodRecyclerView.adapter = FoodRecViewAdapter(foodArray)
 
+        val mySubmitButton = findViewById<Button>(R.id.submitFood)
+
+        mySubmitButton.setOnClickListener(View.OnClickListener {
+            fun submitMyFood(view: View) {
+                // Write new data to the database
+
+                // getting the text from user input and setting the value of message to send to database
+                val inputFoodView : TextInputEditText = findViewById(R.id.inputFoodField)
+                val inputFood = inputFoodView.text.toString()
+
+                //...
+                // do something with inputFood
+
+                Snackbar.make(
+                    this,
+                    findViewById(R.id.submitFood),
+                    "Your Food $inputFood has been added.",
+                    Snackbar.LENGTH_LONG
+                ).show()
+
+            }
+        })
+
     }
 
-    fun submitFood(view: View) {
-        // Write new data to the database
-
-        // getting the text from user input and setting the value of message to send to database
-        val inputFoodView : TextInputEditText = findViewById(R.id.inputFoodField)
-        val inputFood = inputFoodView.text.toString()
-
-        //...
-        // do something with inputFood
-
-
-
-        Snackbar.make(
-            this,
-            findViewById(R.id.submitFood),
-            "Your Food $inputFood has been added.",
-            Snackbar.LENGTH_LONG
-        ).show()
-
-    }
 
 
 }
