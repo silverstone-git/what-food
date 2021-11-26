@@ -32,13 +32,16 @@ class EditCuisine : AppCompatActivity() {
             .get()
             .addOnSuccessListener { result ->
                 for (document in result) {
+
+                    // ading the food into the array
                     Log.d(TAG, "${document.id} => ${document.data}, name of recipe is: ${document.data["nameOfRecipe"].toString()}")
                     foodArray.add(document.data["nameOfRecipe"].toString())
-                    Toast.makeText(applicationContext, "the list is : $foodArray", Toast.LENGTH_SHORT).show()
-                    val foodRecyclerView = findViewById<RecyclerView>(R.id.FoodRecyclerView)
-                    foodRecyclerView.layoutManager = GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false)
-                    foodRecyclerView.adapter = FoodRecViewAdapter(foodArray)
+
                 }
+                // updating the recycler View using the food array
+                val foodRecyclerView = findViewById<RecyclerView>(R.id.FoodRecyclerView)
+                foodRecyclerView.layoutManager = GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false)
+                foodRecyclerView.adapter = FoodRecViewAdapter(foodArray)
             }
             .addOnFailureListener { exception ->
                 Log.w(TAG, "Error getting recipe documents.", exception)
@@ -54,9 +57,8 @@ class EditCuisine : AppCompatActivity() {
                 val inputFoodView : TextInputEditText = findViewById(R.id.inputFoodField)
                 val inputFood = inputFoodView.text.toString()
 
-                //...
-                // do something with inputFood
-                // read a hashmap from db, append the updates and run the set function
+                // Now get this inputFood into the database and in the ui
+                // Adding a hashmap document in posts collection
                 val post = hashMapOf(
                     "nameOfRecipe" to inputFood,
                     "timeOfAddition" to System.currentTimeMillis(),

@@ -33,48 +33,6 @@ import com.example.whatfood.R.id.displayProfile as dp1
 
 class MainActivity : AppCompatActivity() {
 
-    // Will connect to database in future
-    // also language conversion is to be done
-    /*
-    private val foodList = arrayOf(
-        "Chhole Bhature",
-        "Dal Parantha",
-        "Red Sauce Pasta",
-        "White Sauce Pasta",
-        "Macaroni",
-        "Bread Butter",
-        "Mayo Sandwich",
-        "Bread Peanut Butter",
-        "Mooli Parantha",
-        "Aloo Parantha",
-        "Pyaz Parantha",
-        "Chilla",
-        "Idli",
-        "Oats",
-        "Dal Parantha",
-        "Pav Bhaji",
-        "Seviyaan",
-        "Poha",
-        "Chuha Bread",
-        "Aloo Pakoda",
-        "Pyaz Pakoda",
-        "Maggi",
-        "Palak Parantha",
-        "Paneer Parantha",
-        "Sooji Bread",
-        "Vegetable Dalia",
-        "Kathi Roll",
-        "Chhole Bhature",
-        "Chana Kulcha",
-        "Upma",
-        "Thepla",
-        "Paneer Bhurji",
-        "Palak Puri",
-        "Omelette"
-    )
-
-     */
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -125,6 +83,7 @@ class MainActivity : AppCompatActivity() {
             val feelHungry = findViewById<Button>(R.id.mainButton)
             val editCuisineButton = findViewById<Button>(R.id.whatsInTheMenu)
 
+            // When the user presses the feel hungry button, give them a random food
             feelHungry.setOnClickListener {
 
                 // fetching data from database
@@ -134,20 +93,18 @@ class MainActivity : AppCompatActivity() {
                     .get()
                     .addOnSuccessListener { result ->
                         for (document in result) {
+
+                            // adding the food to the array
                             Log.d(ContentValues.TAG, "${document.id} => ${document.data}, name of recipe is: ${document.data["nameOfRecipe"].toString()}")
                             foodArray.add(document.data["nameOfRecipe"].toString())
-                            // The Function being called to change the main text again and again
+
                             val sizeOfArray = foodArray.size
                             if ( sizeOfArray > 0 ) {
-                                /*
-                                val floatIndex = random() * foodArray.size
-                                val index = floatIndex.toInt()
 
-                                 */
-
-                                // The actual Changing of text
+                                // Taking a random element from the array and updating the TextView with it
                                 val textView: TextView = findViewById(foodText1)
                                 textView.text = foodArray.toArray().random().toString()
+
                             } else {
                                 Log.d(TAG, "Bro no food data was present")
                             }
@@ -159,6 +116,7 @@ class MainActivity : AppCompatActivity() {
 
                 }
 
+            // The Edit Cuisine Button sends the user to another activity
             editCuisineButton.setOnClickListener {
                 startActivity(Intent(this, EditCuisine::class.java))
             }
@@ -168,31 +126,8 @@ class MainActivity : AppCompatActivity() {
     private fun updateTheUser(user: FirebaseUser?, view: View) {
 
         val db: FirebaseFirestore = Firebase.firestore
-        /*
-        // Execute the below code to check if the user exists, I am not going to because, its realtime updates in fire store listener
 
-        var userExists = false
-
-        db.collection("users")
-            .get()
-            .addOnSuccessListener { result ->
-                for (document in result) {
-                    Log.d(TAG, "Looping through the documents: Document id in users is: ${document.id} Firebase User Id is: ${user?.uid}")
-                    if (document.id == user?.uid) {
-                        userExists = true
-                        Log.d(TAG, "User already Exists, skipping the writing part")
-                    }
-                }
-            }
-            .addOnFailureListener { exception ->
-                Log.w(TAG, "Error getting documents.", exception)
-            }
-
-         */
-
-        //if ( !userExists ) {
-
-        // Create a new user because they don't exist
+        // The User Hash Map to be sent to Database as a 'document' in the users collection
         val userToBePassed = hashMapOf(
             "name" to user?.displayName,
             "email" to user?.email,
@@ -211,7 +146,6 @@ class MainActivity : AppCompatActivity() {
             .addOnFailureListener { e ->
                 Log.w(ContentValues.TAG, "Error adding document", e)
             }
-        //}
 
     }
 
