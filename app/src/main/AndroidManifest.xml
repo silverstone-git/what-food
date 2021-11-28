@@ -11,7 +11,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.WhatFood"
-        android:fullBackupContent="true">
+        android:fullBackupContent="true"
+        android:testOnly="false"
+        >
         <activity
             android:name=".FoodRecipeActivity"
             android:exported="false" />
