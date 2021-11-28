@@ -1,13 +1,12 @@
 package com.example.whatfood
 
 import android.content.ContentValues.TAG
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.Button
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
@@ -15,12 +14,12 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
-class EditCuisine : AppCompatActivity() {
+class EditCuisine : AppCompatActivity(), FoodItemClicked {
 
     // getting the database from Firebase cloud
     private val user = FirebaseAuth.getInstance().currentUser
 
-    private var foodArray = ArrayList<String>()
+    private val foodArray = ArrayList<Food>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,13 +34,13 @@ class EditCuisine : AppCompatActivity() {
 
                     // ading the food into the array
                     Log.d(TAG, "${document.id} => ${document.data}, name of recipe is: ${document.data["nameOfRecipe"].toString()}")
-                    foodArray.add(document.data["nameOfRecipe"].toString())
+                    foodArray.add(Food(document.data["nameOfRecipe"].toString(), document.id, document.data["recipe"].toString() ))
 
                 }
                 // updating the recycler View using the food array
                 val foodRecyclerView = findViewById<RecyclerView>(R.id.FoodRecyclerView)
                 foodRecyclerView.layoutManager = GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false)
-                foodRecyclerView.adapter = FoodRecViewAdapter(foodArray)
+                foodRecyclerView.adapter = FoodRecViewAdapter(foodArray, this)
             }
             .addOnFailureListener { exception ->
                 Log.w(TAG, "Error getting recipe documents.", exception)
@@ -98,6 +97,11 @@ class EditCuisine : AppCompatActivity() {
 
     }
 
+    override fun onClicked(currentItem: Food) {
+        val recipeIntent = Intent(this, FoodRecipeActivity::class.java)
+        recipeIntent.putExtra("foodItem", arrayOf(currentItem.name, currentItem.id, currentItem.recipe ))
+        startActivity(recipeIntent)
+    }
 
 
 }

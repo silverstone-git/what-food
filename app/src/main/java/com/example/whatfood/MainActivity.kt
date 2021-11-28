@@ -27,11 +27,11 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import java.util.ArrayList
 import com.example.whatfood.R.id.foodText as foodText1
 import com.example.whatfood.R.id.displayProfile as dp1
 
 class MainActivity : AppCompatActivity() {
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,7 +87,7 @@ class MainActivity : AppCompatActivity() {
 
                 // fetching data from database
                 val db = Firebase.firestore
-                val foodArray = ArrayList<String>()
+                val foodArray = ArrayList<Food>()
                 db.collection("users/${user.uid}/posts")
                     .get()
                     .addOnSuccessListener { result ->
@@ -95,14 +95,14 @@ class MainActivity : AppCompatActivity() {
 
                             // adding the food to the array
                             Log.d(ContentValues.TAG, "${document.id} => ${document.data}, name of recipe is: ${document.data["nameOfRecipe"].toString()}")
-                            foodArray.add(document.data["nameOfRecipe"].toString())
+                            foodArray.add(Food(document.data["nameOfRecipe"].toString(), document.id, document.data["recipe"].toString()))
 
                             val sizeOfArray = foodArray.size
                             if ( sizeOfArray > 0 ) {
 
                                 // Taking a random element from the array and updating the TextView with it
                                 val textView: TextView = findViewById(foodText1)
-                                textView.text = foodArray.toArray().random().toString()
+                                textView.text = foodArray.random().name
 
                             } else {
                                 Log.d(TAG, "Bro no food data was present")

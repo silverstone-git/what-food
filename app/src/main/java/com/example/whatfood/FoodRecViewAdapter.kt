@@ -6,20 +6,31 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class FoodRecViewAdapter(val recViewElements : ArrayList<String>) : RecyclerView.Adapter<FoodViewHolder>() {
+class FoodRecViewAdapter(val recyclerViewElements : ArrayList<Food>, private val listener: FoodItemClicked) : RecyclerView.Adapter<FoodViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FoodViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.element_layout, parent, false)
-        return FoodViewHolder(view)
+        val foodViewHolder = FoodViewHolder(view)
+        view.setOnClickListener{
+            listener.onClicked(recyclerViewElements[foodViewHolder.absoluteAdapterPosition])
+        }
+
+        return foodViewHolder
     }
 
     override fun onBindViewHolder(holder: FoodViewHolder, position: Int) {
-        val currentElement = recViewElements[position]
-        holder.elementTextView.text = currentElement
+        val currentElement = recyclerViewElements[position]
+        holder.elementTextView.text = currentElement.name
+        holder.elementRecipeView.text = currentElement.recipe
     }
 
-    override fun getItemCount(): Int  = this.recViewElements.size
+    override fun getItemCount(): Int  = this.recyclerViewElements.size
 }
 
 class FoodViewHolder(elementView: View) : RecyclerView.ViewHolder(elementView) {
     val elementTextView : TextView = elementView.findViewById(R.id.ElementTextView)
+    val elementRecipeView: TextView = elementView.findViewById(R.id.recipeTextView)
+}
+
+interface FoodItemClicked {
+    fun onClicked(currentItem: Food)
 }
