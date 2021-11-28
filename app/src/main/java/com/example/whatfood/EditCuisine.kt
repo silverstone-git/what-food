@@ -51,11 +51,20 @@ class EditCuisine : AppCompatActivity() {
         val mySubmitButton = findViewById<Button>(R.id.submitFood)
 
         mySubmitButton.setOnClickListener {
-                // Write new posts to the database
+            // Write new posts to the database
 
-                // getting the text from user input and setting the value of message to send to database
-                val inputFoodView : TextInputEditText = findViewById(R.id.inputFoodField)
-                val inputFood = inputFoodView.text.toString()
+            // getting the text from user input and setting the value of message to send to database
+            val inputFoodView : TextInputEditText = findViewById(R.id.inputFoodField)
+            val inputFood = inputFoodView.text.toString()
+
+            if (inputFood == "") {
+                Snackbar.make(
+                    this,
+                    findViewById(R.id.inputFoodField),
+                    "Please type the name of food in the 'New Food Here' Field",
+                    Snackbar.LENGTH_LONG
+                ).show()
+            } else {
 
                 // Now get this inputFood into the database and in the ui
                 // Adding a hashmap document in posts collection
@@ -69,7 +78,10 @@ class EditCuisine : AppCompatActivity() {
                 db.collection("users/${user!!.uid}/posts")
                     .add(post)
                     .addOnSuccessListener { documentReference ->
-                        Log.d(TAG, "post DocumentSnapshot  added with ID: ${documentReference.id}")
+                        Log.d(
+                            TAG,
+                            "post DocumentSnapshot  added with ID: ${documentReference.id}"
+                        )
                         Snackbar.make(
                             this,
                             findViewById(R.id.submitFood),
@@ -80,8 +92,7 @@ class EditCuisine : AppCompatActivity() {
                     .addOnFailureListener { e ->
                         Log.w(TAG, "Error adding post snapshot", e)
                     }
-
-
+            }
 
         }
 

@@ -27,7 +27,6 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import java.lang.Math.random
 import com.example.whatfood.R.id.foodText as foodText1
 import com.example.whatfood.R.id.displayProfile as dp1
 
@@ -88,7 +87,7 @@ class MainActivity : AppCompatActivity() {
 
                 // fetching data from database
                 val db = Firebase.firestore
-                var foodArray = ArrayList<String>()
+                val foodArray = ArrayList<String>()
                 db.collection("users/${user.uid}/posts")
                     .get()
                     .addOnSuccessListener { result ->
